@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.facebook",
     # Custom apps
     "users",
+    "team_manager_api",
 ]
 
 MIDDLEWARE = [
