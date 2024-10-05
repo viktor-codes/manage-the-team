@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.facebook",
+    "rest_framework",
     # Custom apps
     "users",
     "team_manager_api",
