@@ -1,0 +1,40 @@
+{% load static %}
+{% block content %}
+<nav
+	class="sticky z-[100] h-14 inset-x-0 top-0 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all"
+>
+	<div class="h-full mx-auto w-full max-w-screen-xl px-2.5 md:px-20">
+		<div
+			class="flex h-14 items-center justify-between border-b border-zinc-200"
+		>
+			<a href="/" class="flex z-40 font-semibold items-center">
+				<img
+					src="{% static 'images/favicon.png' %}"
+					alt="logo"
+					class="h-8 w-8"
+				/>
+			</a>
+			<div class="h-full flex items-center space-x-4">
+				{% if user.is_authenticated %}
+				<a
+					href="{% url 'account_logout' %}"
+					class="text-gray-700 hover:text-gray-900"
+					>Logout</a
+				>
+				{% else %}
+				<a
+					href="{% url 'account_login' %}"
+					class="text-gray-700 hover:text-gray-900"
+					>Login</a
+				>
+				<a
+					href="{% url 'account_signup' %}"
+					class="text-gray-700 hover:text-gray-900"
+					>Signup</a
+				>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</nav>
+{% endblock %}
