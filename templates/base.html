@@ -1,0 +1,66 @@
+{% load static %} {% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!-- Block for navigation names -->
+		<title>{% block title %}Team Manager{% endblock %}</title>
+
+		<!-- Block Meta -->
+		{% block meta %}
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, shrink-to-fit=no"
+		/>
+
+		<!-- Primary Meta Tags -->
+		<meta
+			name="title"
+			content="Team Manager - Manage Teams and Employees Effortlessly"
+		/>
+		<meta
+			name="description"
+			content="Team Manager is a comprehensive tool to manage your teams and employees, assign roles, track progress, and optimize team performance seamlessly."
+		/>
+		<meta
+			name="keywords"
+			content="team management, employee management, team collaboration, team organization, team productivity"
+		/>
+
+		<!-- Author and Ownership -->
+		<meta name="author" content="Viktor" />
+		<meta name="application-name" content="TeamManager" />
+
+		{% endblock %}
+
+		<!-- Block for core CSS styles -->
+		{% block core_css %}
+		<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+		{% endblock %} {% block extra_css %}
+
+		<!-- global Font Awesome link -->
+
+		{% endblock %}
+
+		<!-- Block for core JS scripts -->
+		{% block core_js %} {% endblock %}
+
+		<!-- FavIcon -->
+		<link
+			rel="icon"
+			type="image/png"
+			href="{% static 'images/favicon.png' %}"
+		/>
+	</head>
+
+	<body>
+		<!-- Header -->
+		{% block header %} {% endblock %}
+
+		<!-- Content -->
+		<main>{% block content %} {% endblock content %}</main>
+
+		{% block extra_js %} {% endblock %}
+	</body>
+</html>
