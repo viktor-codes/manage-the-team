@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Teams Page{% endblock %}
+{% block content %}
+<div class="h-screen mx-auto w-full max-w-screen-xl px-2.5 md:px-20">
+    <h2 class="text-2xl font-bold my-6">Manage Teams</h2>
+
+    <!-- Team Creation Form -->
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-2">Create a New Team</h3>
+        <form id="create-team-form">
+            <div class="mb-4">
+                <label for="team_name" class="block text-gray-700">Team Name</label>
+                <input type="text" name="name" placeholder="Team Name" required
+                       class="border rounded w-full px-3 py-2" placeholder="Enter team name" />
+            </div>
+            <div class="mb-4">
+                <label for="team_description" class="block text-gray-700">Team Description</label>
+                <textarea name="team_description" id="team_description" rows="4" 
+                          class="border rounded w-full px-3 py-2" placeholder="Enter team description"></textarea>
+            </div>
+            <button type="submit" class="bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700">Create Team</button>
+        </form>
+    </div>
+
+    <!-- Existing Teams List -->
+    <h3 class="text-xl font-semibold mb-2">Existing Teams</h3>
+    <div id="teamList">
+        <!-- Example of rendering teams, update based on your actual structure -->
+        {% for team in teams %}
+            <div class="team-item">
+                <a href="{% url 'team_detail' team.id %}">{{ team.name }}</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Update Team Modal -->
+<div id="update-team-modal" class="hidden">
+    <h3 class="text-xl font-semibold mb-2">Update Team</h3>
+    <form id="update-team-form">
+        <input type="hidden" name="team_id" id="update_team_id">
+        <div class="mb-4">
+            <label for="update_team_name" class="block text-gray-700">Team Name</label>
+            <input type="text" name="team_name" id="update_team_name" required
+                   class="border rounded w-full px-3 py-2" placeholder="Enter team name" />
+        </div>
+        <div class="mb-4">
+            <label for="update_team_description" class="block text-gray-700">Team Description</label>
+            <textarea name="team_description" id="update_team_description" rows="4" 
+                      class="border rounded w-full px-3 py-2" placeholder="Enter team description"></textarea>
+        </div>
+        <button type="submit" class="bg-green-600 text-white rounded px-4 py-2 hover:bg-green-700">Update Team</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const createTeamForm = document.getElementById('create-team-form');
+        const updateTeamModal = document.getElementById('update-team-modal');
+        const updateTeamForm = document.getElementById('update-team-form');
+        const teamList = document.getElementById('team-list');
+
+        // Function to fetch and display teams
+        async function fetchTeams() {
+            const response = await fetch('/api/teams/');
+            const teams = await response.json();
+            const teamList = document.getElementById('teamList');
+            teamList.innerHTML = ''; // Clear existing list
+        
+            teams.forEach(team => {
+                const teamItem = document.createElement('div');
+                teamItem.className = 'team-item';
+                teamItem.innerHTML = `<a href="/teams/${team.id}/">${team.name}</a>`;
+                teamList.appendChild(teamItem);
+            });
+        }
+        
+        // Call fetchTeams() when the page loads or whenever you need to refresh the team list
+        fetchTeams();
+
+        // Function to handle team creation
+        createTeamForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(createTeamForm);
+    
+            try {
+                const response = await fetch('/api/teams/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+                    }
+                });
+    
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Error:', errorData);
+                    alert('Failed to create team: ' + JSON.stringify(errorData));
+                    return;
+                }
+    
+                const teamData = await response.json();
+                console.log('Team created:', teamData);
+                fetchTeams(); // Refresh the team list
+                createTeamForm.reset(); // Reset the form
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while creating the team.');
+            }
+        };
+    
+        // Function to get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Function to open the update modal
+        function openUpdateModal(team) {
+            document.getElementById('update_team_id').value = team.id;
+            document.getElementById('update_team_name').value = team.name;
+            document.getElementById('update_team_description').value = team.description;
+            updateTeamModal.classList.remove('hidden');
+        }
+
+        // Function to handle team update
+        updateTeamForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(updateTeamForm);
+            const teamId = document.getElementById('update_team_id').value;
+            await fetch(`/api/teams/${teamId}/`, {
+                method: 'PUT',
+                body: formData
+            });
+            updateTeamModal.classList.add('hidden'); // Close the modal
+            fetchTeams(); // Refresh the team list
+        };
+
+        // Function to handle team deletion
+        async function deleteTeam(teamId) {
+            await fetch(`/api/teams/${teamId}/`, {
+                method: 'DELETE'
+            });
+            fetchTeams(); // Refresh the team list
+        }
+
+        fetchTeams(); // Initial fetch of teams
+    });
+</script>
+
+{% endblock %}

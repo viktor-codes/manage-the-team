@@ -63,11 +63,12 @@
 
 	<body>
 		<!-- Header -->
-		{% block header %} {% endblock %}
+		{% include 'header.html' %}
 
 		<!-- Content -->
 		<main>{% block content %} {% endblock content %}</main>
 
 		{% block extra_js %} {% endblock %}
+		{% include 'footer.html' %}
 	</body>
 </html>

@@ -2,15 +2,8 @@ from rest_framework import serializers
 from .models import Employee, Team
 
 
-class TeamSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Team
-        fields = ["id", "name", "description", "created_at"]
-
-
 class EmployeeSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source="user.email", read_only=True)
-    teams = TeamSerializer(many=True, read_only=True)
 
     class Meta:
         model = Employee
@@ -24,3 +17,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
             "date_joined",
             "is_active",
         ]
+
+
+class TeamSerializer(serializers.ModelSerializer):
+    employees = EmployeeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Team
+        fields = ["id", "name", "description", "employees", "created_at"]
